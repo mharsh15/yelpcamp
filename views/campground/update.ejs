@@ -1,0 +1,68 @@
+<% layout('/layouts/boilerplate') %>
+	<script>
+		const mapboxToken = '<%-process.env.MAPBOX_TOKEN %>'
+		let geoLocation = '<%= camp.geometry.coordinates %>'.split(",")
+	</script>
+	<h1 class="text-center">Update Campground</h1>
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<form action="/campground/<%=camp.id%>?_method=PUT" method="POST" novalidate class="validated-form"
+				enctype="multipart/form-data">
+				<div class="mb-3">
+					<label class="form-label" for="title">Name of Camp</label>
+					<input class="form-control" type=" text" name="campground[title]" id="title"
+						value="<%= camp.title %>">
+
+				</div>
+				<div class=" mb-3">
+					<label class="form-label" for="location">Location of Camp</label>
+					<input class="form-control" type="text" name="campground[location]" id="location"
+						value="<%= camp.location %>" required>
+				</div>
+				<div class="mb3">
+					<div id='map' style='width: 400px; height: 300px;'></div>
+					<input type="text" class="form-control" name="campground[geometry][longitude]" id="longitude"
+						style="visibility:collapse;" required>
+					<input type="text" class="form-control" name="campground[geometry][latitude]" id="latitude"
+						style="visibility:collapse;" required>
+					<div class=" valid-feedback">Looks Good!!!
+					</div>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="description">Description</label>
+					<textarea class="form-control" name="campground[description]"
+						id="description" required><%= camp.description %></textarea>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="price">Price</label>
+					<div class="input-group">
+						<span class="input-group-text">$</span>
+						<input class="form-control" aria-label="Dollar amount (with dot and two decimal places)"
+							type="number" name="campground[price]" id="price" value="<%= camp.price %>">
+					</div>
+
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="image">Image URL</label>
+					<input class="form-control" type="file" name="campground[image]" id="image" multiple>
+				</div>
+				<div class="mb-3">
+					<% camp.images.forEach((img,i)=> { %>
+						<img src="<%=img.thumbnail %>" alt="" class="img-thumbnail">
+						<div class="form-check-inline">
+							<input type="checkbox" id="image-<%= i %>" name="deleteImages[]"
+								value="<%= img.filename %>">
+							<label for="image-<%= i %> ">Delete</label>
+						</div>
+						<% })%>
+
+
+				</div>
+				<div class="mb-3">
+					<button class="btn btn-success">UPDATE Camp</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+	<script src="/js/mapboxEditRoute.js"></script>
